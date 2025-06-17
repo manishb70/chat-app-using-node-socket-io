@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Page</title>
+    <!-- Tailwind CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md bg-white rounded-lg shadow-lg flex flex-col h-[80vh]">
+        <!-- Header -->
+        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
+            <h2 class="text-xl font-semibold text-gray-800">Chat Room</h2>
+            <span
+                class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                Online
+            </span>
+        </div>
+        <!-- Users List -->
+        <div id="user-list" class="px-6 py-2 border-b border-gray-100 flex space-x-2 overflow-x-auto">
+            <!-- <div class="flex flex-col items-center">
+                <span
+                    class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold">A</span>
+                <span class="text-xs mt-1 text-gray-600">Alice</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span
+                    class="w-8 h-8 rounded-full bg-pink-200 flex items-center justify-center text-pink-700 font-bold">B</span>
+                <span class="text-xs mt-1 text-gray-600">Bob</span>
+            </div>
+            <div class="flex flex-col items-center">
+                <span
+                    class="w-8 h-8 rounded-full bg-green-200 flex items-center justify-center text-green-700 font-bold">Y</span>
+                <span class="text-xs mt-1 text-gray-600">You</span>
+            </div> -->
+        </div>
+        <!-- Messages -->
+        <div id="chat-messages" class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50">
+            <!-- Messages will appear here -->
+        </div>
+        <!-- Typing Indicator -->
+        <div id="typing-indicator" class="px-6 py-1 text-sm text-gray-400 hidden">
+            Someone is typing...
+        </div>
+        <!-- Form -->
+        <form id="chat-form" class="flex items-center border-t border-gray-200 px-4 py-3 bg-white">
+            <input id="chat-input" type="text" placeholder="Type your message..."
+                class="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                autocomplete="off" required />
+            <button type="submit"
+                class="ml-3 px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition">
+                Send
+            </button>
+            <button type="button" id="share-location"
+                class="ml-2 px-3 py-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition">
+                Share Location
+            </button>
+        </form>
+    </div>
+
+
+
+
+
+</body>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+
+    const clientName = prompt("Please enter your name ")
+
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+    const chatMessages = document.getElementById('chat-messages');
+    const typingIndicator = document.getElementById('typing-indicator');
+    const shareLocationBtn = document.getElementById('share-location');
+    //this is the websocket connection 
+    
+    const socket = io();
+
+    socket.emit("new-connection",clientName)
+
+    socket.on("new-user",(user)=>{
+
+        const userLists = document.getElementById("user-list")
+        const firstCharacter = (user.charAt(user)).toUpperCase()
+
+        userLists.innerHTML+=`
+          <div class="flex flex-col items-center">
+                <span
+                    class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold">${firstCharacter}</span>
+                <span class="text-xs mt-1 text-gray-600">${user}</span>
+            </div>
+        `
+
+        
+
+
+
+
+    })
+
+    socket.on("recieved", (msg) => {
+        console.log(msg);
+
+
+        console.log(msg.socketId, socket.id);
+        if (msg.socketId != socket.id) {
+
+            // alert("self message")
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = "flex justify-start";
+            msgDiv.innerHTML = `
+            <div class="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-xs break-words shadow">
+                <div class="text-xs text-left text-blue-100 mb-1">You</div>
+                ${msg.msg}
+                <div class="text-[10px] text-blue-100 mt-1 text-right">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                </div>
+                `;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+    })
+
+
+    chatForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        const msg = chatInput.value.trim();
+        if (msg) {
+
+
+            let data = {
+                user: clientName,
+                msg
+            }
+
+            socket.emit("messge", data)
+
+
+            const msgDiv = document.createElement('div');
+            msgDiv.className = "flex justify-end";
+            msgDiv.innerHTML = `
+                    <div class="bg-green-500 text-white px-4 py-2 rounded-lg max-w-xs break-words shadow">
+                        <div class="text-xs text-left text-blue-100 mb-1">You</div>
+                        ${msg}
+                        <div class="text-[10px] text-blue-100 mt-1 text-right">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                    </div>
+                `;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            chatInput.value = '';
+        }
+    });
+
+    // Typing indicator (demo only)
+    let typingTimeout;
+    chatInput.addEventListener('input', () => {
+        typingIndicator.classList.remove('hidden');
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(() => {
+            typingIndicator.classList.add('hidden');
+        }, 1000);
+    });
+
+    // Share Location functionality
+    shareLocationBtn.addEventListener('click', () => {
+        if (!navigator.geolocation) {
+            alert('Geolocation is not supported by your browser.');
+            return;
+        }
+        shareLocationBtn.disabled = true;
+        shareLocationBtn.textContent = 'Sharing...';
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const { latitude, longitude } = position.coords;
+                const msgDiv = document.createElement('div');
+                msgDiv.className = "flex justify-end";
+                msgDiv.innerHTML = `
+                        <div class="bg-green-500 text-white px-4 py-2 rounded-lg max-w-xs break-words shadow">
+                            <div class="text-xs text-right text-green-100 mb-1">You</div>
+                            <a href="https://www.google.com/maps?q=${latitude},${longitude}" target="_blank" class="underline">
+                                My location: [${latitude.toFixed(5)}, ${longitude.toFixed(5)}]
+                            </a>
+                            <div class="text-[10px] text-green-100 mt-1 text-right">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                        </div>
+                    `;
+                chatMessages.appendChild(msgDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                shareLocationBtn.disabled = false;
+                shareLocationBtn.textContent = 'Share Location';
+            },
+            () => {
+                alert('Unable to fetch location.');
+                shareLocationBtn.disabled = false;
+                shareLocationBtn.textContent = 'Share Location';
+            }
+        );
+    });
+
+
+
+</script>
+
+</html>
