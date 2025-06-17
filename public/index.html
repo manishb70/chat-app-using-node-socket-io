@@ -7,201 +7,250 @@
     <title>Chat Page</title>
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Heroicons for icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
 </head>
 
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-    <div class="w-full max-w-md bg-white rounded-lg shadow-lg flex flex-col h-[80vh]">
+<body class="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl flex flex-col h-[85vh] border border-blue-200">
         <!-- Header -->
-        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-            <h2 class="text-xl font-semibold text-gray-800">Chat Room</h2>
-            <span
-                class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between bg-gradient-to-r from-blue-500 to-purple-500 rounded-t-2xl">
+            <div class="flex items-center space-x-2">
+                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <h2 class="text-2xl font-bold text-white drop-shadow">Chat Room</h2>
+            </div>
+            <span class="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full shadow">
+                <svg class="w-3 h-3 mr-1 text-green-500" fill="currentColor" viewBox="0 0 20 20"><circle cx="10" cy="10" r="10"/></svg>
                 Online
             </span>
         </div>
         <!-- Users List -->
-        <div id="user-list" class="px-6 py-2 border-b border-gray-100 flex space-x-2 overflow-x-auto">
-            <!-- <div class="flex flex-col items-center">
-                <span
-                    class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold">A</span>
-                <span class="text-xs mt-1 text-gray-600">Alice</span>
-            </div>
-            <div class="flex flex-col items-center">
-                <span
-                    class="w-8 h-8 rounded-full bg-pink-200 flex items-center justify-center text-pink-700 font-bold">B</span>
-                <span class="text-xs mt-1 text-gray-600">Bob</span>
-            </div>
-            <div class="flex flex-col items-center">
-                <span
-                    class="w-8 h-8 rounded-full bg-green-200 flex items-center justify-center text-green-700 font-bold">Y</span>
-                <span class="text-xs mt-1 text-gray-600">You</span>
-            </div> -->
+        <div id="user-list" class="px-6 py-2 border-b border-gray-100 flex space-x-4 overflow-x-auto bg-gray-50">
+            <!-- Users will be added here -->
         </div>
         <!-- Messages -->
-        <div id="chat-messages" class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gray-50">
+        <div id="chat-messages" class="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-gradient-to-b from-white via-blue-50 to-purple-50">
             <!-- Messages will appear here -->
         </div>
         <!-- Typing Indicator -->
-        <div id="typing-indicator" class="px-6 py-1 text-sm text-gray-400 hidden">
+        <div id="typing-indicator" class="px-6 py-1 text-sm text-purple-400 hidden animate-pulse">
             Someone is typing...
         </div>
         <!-- Form -->
-        <form id="chat-form" class="flex items-center border-t border-gray-200 px-4 py-3 bg-white">
+        <form id="chat-form" class="flex items-center border-t border-gray-200 px-4 py-3 bg-white space-x-2">
+            <button type="button" id="emoji-btn" class="p-2 rounded-full hover:bg-gray-100 transition">
+                <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M8 15s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01"/><path d="M15 9h.01"/></svg>
+            </button>
             <input id="chat-input" type="text" placeholder="Type your message..."
-                class="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+                class="flex-1 px-4 py-2 border rounded-full focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50"
                 autocomplete="off" required />
             <button type="submit"
-                class="ml-3 px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition">
-                Send
+                class="px-4 py-2 bg-blue-500 text-white rounded-full hover:bg-blue-600 transition flex items-center space-x-1">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                <span>Send</span>
             </button>
             <button type="button" id="share-location"
-                class="ml-2 px-3 py-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition">
-                Share Location
+                class="px-3 py-2 bg-green-500 text-white rounded-full hover:bg-green-600 transition flex items-center space-x-1">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+                <span>Location</span>
             </button>
         </form>
+        <!-- Emoji Picker (hidden by default) -->
+        <div id="emoji-picker" class="absolute z-50 bg-white border rounded shadow-lg p-2 grid grid-cols-8 gap-2 text-xl hidden"></div>
     </div>
 
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Emoji Picker Data
+        const emojis = ["😀","😁","😂","🤣","😃","😄","😅","😆","😉","😊","😍","😘","😗","😙","😚","🙂","🤗","🤩","🤔","🤨","😐","😑","😶","🙄","😏","😣","😥","😮","🤐","😯","😪","😫","😴","😌","😛","😜","😝","🤤","😒","😓","😔","😕","🙃","🤑","😲","☹️","🙁","😖","😞","😟","😤","😢","😭","😦","😧","😨","😩","🤯","😬","😰","😱","🥵","🥶","😳","🤪","😵","😡","😠","🤬","😷","🤒","🤕","🤢","🤮","🥴","😇","🥳"];
 
+        // Emoji Picker
+        const emojiBtn = document.getElementById('emoji-btn');
+        const emojiPicker = document.getElementById('emoji-picker');
+        const chatInput = document.getElementById('chat-input');
+        emojiBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            emojiPicker.classList.toggle('hidden');
+            const rect = emojiBtn.getBoundingClientRect();
+            emojiPicker.style.top = (rect.bottom + window.scrollY + 5) + 'px';
+            emojiPicker.style.left = (rect.left + window.scrollX) + 'px';
+        });
+        // Populate emoji picker
+        emojiPicker.innerHTML = emojis.map(e => `<button type="button" class="hover:bg-gray-200 rounded p-1">${e}</button>`).join('');
+        emojiPicker.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') {
+                chatInput.value += e.target.textContent;
+                emojiPicker.classList.add('hidden');
+                chatInput.focus();
+            }
+        });
+        // Hide emoji picker on click outside
+        document.addEventListener('click', (e) => {
+            if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
+                emojiPicker.classList.add('hidden');
+            }
+        });
 
+        // Prompt for name
+        let clientName = "";
+        while (!clientName) {
+            clientName = prompt("Please enter your name:");
+            if (clientName) clientName = clientName.trim();
+        }
 
+        const chatForm = document.getElementById('chat-form');
+        const chatMessages = document.getElementById('chat-messages');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const shareLocationBtn = document.getElementById('share-location');
+        const socket = io();
 
-</body>
-<script src="/socket.io/socket.io.js"></script>
-<script>
+        // User list management
+        let users = [];
 
-    const clientName = prompt("Please enter your name ")
+        socket.emit("new-connection", clientName);
 
-    const chatForm = document.getElementById('chat-form');
-    const chatInput = document.getElementById('chat-input');
-    const chatMessages = document.getElementById('chat-messages');
-    const typingIndicator = document.getElementById('typing-indicator');
-    const shareLocationBtn = document.getElementById('share-location');
-    //this is the websocket connection 
-    
-    const socket = io();
+        socket.on("user-list", (userArr) => {
+            users = userArr;
+            renderUserList();
+        });
 
-    socket.emit("new-connection",clientName)
+        socket.on("new-user", (user) => {
+            if (!users.includes(user)) users.push(user);
+            renderUserList();
+        });
 
-    socket.on("new-user",(user)=>{
+        socket.on("user-left", (user) => {
+            users = users.filter(u => u !== user);
+            renderUserList();
+        });
 
-        const userLists = document.getElementById("user-list")
-        const firstCharacter = (user.charAt(user)).toUpperCase()
-
-        userLists.innerHTML+=`
-          <div class="flex flex-col items-center">
-                <span
-                    class="w-8 h-8 rounded-full bg-blue-200 flex items-center justify-center text-blue-700 font-bold">${firstCharacter}</span>
-                <span class="text-xs mt-1 text-gray-600">${user}</span>
-            </div>
-        `
-
-        
-
-
-
-
-    })
-
-    socket.on("recieved", (msg) => {
-        console.log(msg);
-
-
-        console.log(msg.socketId, socket.id);
-        if (msg.socketId != socket.id) {
-
-            // alert("self message")
-
-            const msgDiv = document.createElement('div');
-            msgDiv.className = "flex justify-start";
-            msgDiv.innerHTML = `
-            <div class="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-xs break-words shadow">
-                <div class="text-xs text-left text-blue-100 mb-1">You</div>
-                ${msg.msg}
-                <div class="text-[10px] text-blue-100 mt-1 text-right">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+        function renderUserList() {
+            const userLists = document.getElementById("user-list");
+            userLists.innerHTML = users.map(user => {
+                const color = user === clientName ? "bg-green-200 text-green-700" : "bg-blue-200 text-blue-700";
+                const firstCharacter = user.charAt(0).toUpperCase();
+                return `
+                <div class="flex flex-col items-center">
+                    <span class="w-8 h-8 rounded-full ${color} flex items-center justify-center font-bold shadow">${firstCharacter}</span>
+                    <span class="text-xs mt-1 text-gray-600 ${user === clientName ? 'font-semibold' : ''}">${user === clientName ? 'You' : user}</span>
                 </div>
                 `;
-            chatMessages.appendChild(msgDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+            }).join('');
         }
-    })
 
-
-    chatForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-        const msg = chatInput.value.trim();
-        if (msg) {
-
-
-            let data = {
-                user: clientName,
-                msg
+        // Message receive
+        socket.on("recieved", (msg) => {
+            if (msg.socketId !== socket.id) {
+                addMessage(msg, false);
             }
+        });
 
-            socket.emit("messge", data)
+        // Location receive
+        socket.on("location", (data) => {
+            if (data.socketId !== socket.id) {
+                addLocationMessage(data, false);
+            }
+        });
 
+        // Typing indicator
+        socket.on("typing", (user) => {
+            if (user !== clientName) {
+                typingIndicator.textContent = `${user} is typing...`;
+                typingIndicator.classList.remove('hidden');
+                clearTimeout(typingIndicator.timeout);
+                typingIndicator.timeout = setTimeout(() => {
+                    typingIndicator.classList.add('hidden');
+                }, 1200);
+            }
+        });
 
+        // Send message
+        chatForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            const msg = chatInput.value.trim();
+            if (msg) {
+                let data = {
+                    user: clientName,
+                    msg
+                };
+                socket.emit("messge", data);
+                addMessage(data, true);
+                chatInput.value = '';
+            }
+        });
+
+        // Typing event
+        let typingTimeout;
+        chatInput.addEventListener('input', () => {
+            socket.emit("typing", clientName);
+        });
+
+        // Share Location functionality
+        shareLocationBtn.addEventListener('click', () => {
+            if (!navigator.geolocation) {
+                alert('Geolocation is not supported by your browser.');
+                return;
+            }
+            shareLocationBtn.disabled = true;
+            shareLocationBtn.textContent = 'Sharing...';
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const { latitude, longitude } = position.coords;
+                    const data = {
+                        user: clientName,
+                        latitude,
+                        longitude
+                    };
+                    socket.emit("location", data);
+                    addLocationMessage(data, true);
+                    shareLocationBtn.disabled = false;
+                    shareLocationBtn.textContent = 'Location';
+                },
+                () => {
+                    alert('Unable to fetch location.');
+                    shareLocationBtn.disabled = false;
+                    shareLocationBtn.textContent = 'Location';
+                }
+            );
+        });
+
+        // Add message to chat
+        function addMessage(msg, isSelf) {
             const msgDiv = document.createElement('div');
-            msgDiv.className = "flex justify-end";
+            msgDiv.className = `flex ${isSelf ? 'justify-end' : 'justify-start'}`;
             msgDiv.innerHTML = `
-                    <div class="bg-green-500 text-white px-4 py-2 rounded-lg max-w-xs break-words shadow">
-                        <div class="text-xs text-left text-blue-100 mb-1">You</div>
-                        ${msg}
-                        <div class="text-[10px] text-blue-100 mt-1 text-right">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                    </div>
-                `;
+                <div class="${isSelf ? 'bg-green-500' : 'bg-blue-500'} text-white px-4 py-2 rounded-lg max-w-xs break-words shadow relative">
+                    <div class="text-xs ${isSelf ? 'text-green-100' : 'text-blue-100'} mb-1">${isSelf ? 'You' : msg.user}</div>
+                    ${msg.msg}
+                    <div class="text-[10px] ${isSelf ? 'text-green-100' : 'text-blue-100'} mt-1 text-right">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                </div>
+            `;
             chatMessages.appendChild(msgDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
-            chatInput.value = '';
         }
-    });
 
-    // Typing indicator (demo only)
-    let typingTimeout;
-    chatInput.addEventListener('input', () => {
-        typingIndicator.classList.remove('hidden');
-        clearTimeout(typingTimeout);
-        typingTimeout = setTimeout(() => {
-            typingIndicator.classList.add('hidden');
-        }, 1000);
-    });
-
-    // Share Location functionality
-    shareLocationBtn.addEventListener('click', () => {
-        if (!navigator.geolocation) {
-            alert('Geolocation is not supported by your browser.');
-            return;
+        // Add location message
+        function addLocationMessage(data, isSelf) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `flex ${isSelf ? 'justify-end' : 'justify-start'}`;
+            msgDiv.innerHTML = `
+                <div class="${isSelf ? 'bg-green-500' : 'bg-blue-500'} text-white px-4 py-2 rounded-lg max-w-xs break-words shadow relative">
+                    <div class="text-xs ${isSelf ? 'text-green-100' : 'text-blue-100'} mb-1">${isSelf ? 'You' : data.user}</div>
+                    <a href="https://www.google.com/maps?q=${data.latitude},${data.longitude}" target="_blank" class="underline">
+                        My location: [${data.latitude.toFixed(5)}, ${data.longitude.toFixed(5)}]
+                    </a>
+                    <div class="text-[10px] ${isSelf ? 'text-green-100' : 'text-blue-100'} mt-1 text-right">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                </div>
+            `;
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
-        shareLocationBtn.disabled = true;
-        shareLocationBtn.textContent = 'Sharing...';
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const { latitude, longitude } = position.coords;
-                const msgDiv = document.createElement('div');
-                msgDiv.className = "flex justify-end";
-                msgDiv.innerHTML = `
-                        <div class="bg-green-500 text-white px-4 py-2 rounded-lg max-w-xs break-words shadow">
-                            <div class="text-xs text-right text-green-100 mb-1">You</div>
-                            <a href="https://www.google.com/maps?q=${latitude},${longitude}" target="_blank" class="underline">
-                                My location: [${latitude.toFixed(5)}, ${longitude.toFixed(5)}]
-                            </a>
-                            <div class="text-[10px] text-green-100 mt-1 text-right">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
-                        </div>
-                    `;
-                chatMessages.appendChild(msgDiv);
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-                shareLocationBtn.disabled = false;
-                shareLocationBtn.textContent = 'Share Location';
-            },
-            () => {
-                alert('Unable to fetch location.');
-                shareLocationBtn.disabled = false;
-                shareLocationBtn.textContent = 'Share Location';
-            }
-        );
-    });
 
+        // Initial user list request
+        socket.emit("get-users");
 
-
-</script>
-
+        // Feather icons
+        feather.replace();
+    </script>
+</body>
 </html>
